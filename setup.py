@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='pytesla',
-    version='0.2',
+    version='0.3',
     author='Denis Laprise',
     author_email='dlaprise@gmail.com',
     packages=['pytesla',],
