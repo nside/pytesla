@@ -9,8 +9,7 @@ It currently maps the REST API 1:1.
 Usage
 =====
 
-    import pytesla
-
+    >>> import pytesla
     >>> mycar = pytesla.Connection('myemail', 'mypassword').vehicle('myvin')
     >>> mycar.honk_horn()
     True
