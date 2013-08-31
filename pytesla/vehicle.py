@@ -103,10 +103,13 @@ class Vehicle:
     def auto_conditioning_stop(self):
         self._request('auto_conditioning_stop', command=True)
 
-    def sun_roof_control(self, state):
-        if not state in ('open', 'close', 'comfort', 'vent'):
+    def sun_roof_control(self, state, percent=None):
+        if state == 'move' and percent:
+            self._request('sun_roof_control', command=True, state=state, percent=percent)
+        elif state in ('open', 'close', 'comfort', 'vent'):
+            self._request('sun_roof_control', command=True, state=state)
+        else:
             raise ValueError("Invalid sunroof state")
-        self._request('sun_roof_control', command=True, state=state)
 
     def wake_up(self):
         self._request('wake_up', command=True)
