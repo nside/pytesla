@@ -73,6 +73,9 @@ class Vehicle:
     def door_unlock(self):
         self._request('door_unlock', command=True)
 
+    def charge_port_door_open(self):
+        self._request('charge_port_door_open', command=True)
+
     def charge_standard(self):
         self._request('charge_standard', command=True)
 
@@ -104,6 +107,9 @@ class Vehicle:
         if not state in ('open', 'close', 'comfort', 'vent'):
             raise ValueError("Invalid sunroof state")
         self._request('sun_roof_control', command=True, state=state)
+
+    def wake_up(self):
+        self._request('wake_up', command=True)
 
     def __repr__(self):
         return "<Vehicle %s>" % self.vin
