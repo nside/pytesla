@@ -1,5 +1,9 @@
 import urllib
 
+class CommandError(Exception):
+    """Tesla Model S vehicle command returned failure"""
+    pass
+
 class Vehicle:
 
     def __init__(self, vin, conn, payload = None):
@@ -35,78 +39,71 @@ class Vehicle:
 
     @property
     def charge_state(self):
-        return self._command('charge_state')
+        return self._request('charge_state')
 
     @property
     def climate_state(self):
-        return self._command('climate_state')
+        return self._request('climate_state')
 
     @property
     def drive_state(self):
-        return self._command('drive_state')
+        return self._request('drive_state')
 
     @property
     def gui_settings(self):
-        return self._command('gui_settings')
+        return self._request('gui_settings')
 
     @property
     def vehicle_state(self):
-        return self._command('vehicle_state')
+        return self._request('vehicle_state')
 
-    def _command(self, verb, **kwargs):
+    def _request(self, verb, command=False, **kwargs):
         get = ''
         if kwargs:
             get = '?' + urllib.urlencode(kwargs)
-        return self._conn.read_json_path(('vehicles/%s/command/%s' + get) % (self.id, verb))
+        p = self._conn.read_json_path(('vehicles/%s/command/%s' + get) % (self.id, verb))
+        if command and not p['result']:
+            # Command returned failure, raise exception
+            raise CommandError(p['reason'])
+        return p
 
     def door_lock(self):
-        p = self._command('door_lock')
-        return p['result']
+        self._request('door_lock', command=True)
 
     def door_unlock(self):
-        p = self._command('door_unlock')
-        return p['result']
+        self._request('door_unlock', command=True)
 
     def charge_standard(self):
-        p = self._command('charge_standard')
-        return p['result']
+        self._request('charge_standard', command=True)
 
     def charge_max_range(self):
-        p = self._command('charge_max_range')
-        return p['result']
+        self._request('charge_max_range', command=True)
 
     def charge_start(self):
-        p = self._command('charge_start')
-        return p['result']
+        self._request('charge_start', command=True)
 
     def charge_stop(self):
-        p = self._command('charge_stop')
-        return p['result']
+        self._request('charge_stop', command=True)
 
     def flash_lights(self):
-        p = self._command('flash_lights')
-        return p['result']
+        self._request('flash_lights', command=True)
 
     def honk_horn(self):
-        p = self._command('honk_horn')
-        return p['result']
+        self._request('honk_horn', command=True)
 
     def set_temps(self, driver, passenger):
-        p = self._command('set_temps', driver_degC = driver, pasenger_temp = passenger)
-        return p['result']
+        self._request('set_temps', command=True, driver_degC = driver, pasenger_temp = passenger)
 
     def auto_conditioning_start(self):
-        p = self._command('auto_conditioning_start')
-        return p['result']
+        self._request('auto_conditioning_start', command=True)
 
     def auto_conditioning_stop(self):
-        p = self._command('auto_conditioning_stop')
-        return p['result']
+        self._request('auto_conditioning_stop', command=True)
 
     def sun_roof_control(self, state):
         if not state in ('open', 'close', 'comfort', 'vent'):
-            raise Exception('Invalid sunroof state')
-        p = self._command('sun_roof_control', state = state)
+            raise ValueError("Invalid sunroof state")
+        self._request('sun_roof_control', command=True, state=state)
 
     def __repr__(self):
         return "<Vehicle %s>" % self.vin
