@@ -95,7 +95,7 @@ class Vehicle:
         self._request('honk_horn', command=True)
 
     def set_temps(self, driver, passenger):
-        self._request('set_temps', command=True, driver_degC = driver, pasenger_temp = passenger)
+        self._request('set_temps', command=True, driver_temp=driver, passenger_temp=passenger)
 
     def auto_conditioning_start(self):
         self._request('auto_conditioning_start', command=True)
