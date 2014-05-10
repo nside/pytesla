@@ -1,4 +1,6 @@
-import urllib2, urllib, re, json, sys
+import json
+import urllib2
+import urllib
 from vehicle import Vehicle
 
 class CookieJar:
